@@ -3,6 +3,7 @@ package org.example.pages;
 import io.qameta.allure.Step;
 import org.example.config.TestConfig;
 import org.example.core.BasePage;
+import org.example.driver.DriverManager;
 import org.openqa.selenium.By;
 
 public class LoginPage extends BasePage {
@@ -11,10 +12,18 @@ public class LoginPage extends BasePage {
     private static final By PASSWORD_INPUT = By.id("password");
     private static final By LOGIN_BUTTON = By.id("login-button");
     private static final By ERROR_MESSAGE = By.cssSelector("h3[data-test='error']");
+    private static final LoginPage INSTANCE = new LoginPage();
+
+    private LoginPage() {
+    }
+
+    public static LoginPage getInstance() {
+        return INSTANCE;
+    }
 
     @Step("Открыть страницу логина")
     public LoginPage open() {
-        driver.get(TestConfig.getBaseUrl());
+        DriverManager.getDriver().get(TestConfig.getBaseUrl());
         return this;
     }
 
@@ -33,7 +42,7 @@ public class LoginPage extends BasePage {
     @Step("Отправить форму входа")
     public ProductsPage submitLogin() {
         click(LOGIN_BUTTON);
-        return new ProductsPage();
+        return ProductsPage.getInstance();
     }
 
     @Step("Получить текст ошибки")

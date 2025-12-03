@@ -17,7 +17,7 @@ class ProductsPriceStreamTest extends BaseTest {
     @Test
     @DisplayName("Проверка наличия товаров дешевле 15$")
     void shouldFindProductsCheaperThan15Dollars() {
-        LoginPage loginPage = new LoginPage();
+        LoginPage loginPage = LoginPage.getInstance();
         ProductsPage productsPage = loginPage.loginAs("standard_user", "secret_sauce");
 
         List<Product> products = productsPage.getProducts();

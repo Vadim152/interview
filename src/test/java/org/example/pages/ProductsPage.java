@@ -15,6 +15,14 @@ public class ProductsPage extends BasePage {
     private static final By PRODUCT_ITEMS = By.cssSelector(".inventory_item");
     private static final By PRODUCT_NAME = By.className("inventory_item_name");
     private static final By PRODUCT_PRICE = By.className("inventory_item_price");
+    private static final ProductsPage INSTANCE = new ProductsPage();
+
+    private ProductsPage() {
+    }
+
+    public static ProductsPage getInstance() {
+        return INSTANCE;
+    }
 
     public boolean isOpened() {
         return getCurrentUrl().contains("inventory") && find(TITLE).isDisplayed();
@@ -48,7 +56,7 @@ public class ProductsPage extends BasePage {
     @Step("Открываем корзину")
     public CartPage openCart() {
         click(CART_ICON);
-        return new CartPage();
+        return CartPage.getInstance();
     }
 
 }

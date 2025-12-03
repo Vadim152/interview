@@ -20,7 +20,7 @@ class LoginTest extends BaseTest {
     @Story("Успешный вход с корректными учетными данными")
     @DisplayName("Пользователь может войти как standard_user")
     void userCanLogin() {
-        LoginPage loginPage = new LoginPage();
+        LoginPage loginPage = LoginPage.getInstance();
         ProductsPage productsPage = loginPage.loginAs("standard_user", "secret_sauce");
         assertTrue(productsPage.isOpened());
     }
@@ -28,7 +28,7 @@ class LoginTest extends BaseTest {
     @Test
     @Story("Сообщение об ошибке при неверном пароле")
     void userSeesErrorOnInvalidPassword() {
-        LoginPage loginPage = new LoginPage();
+        LoginPage loginPage = LoginPage.getInstance();
         loginPage.loginAs("standard_user", "wrong");
         assertEquals("Epic sadface: Имя пользователя и пароль не совпадают ни с одним пользователем этого сервиса", loginPage.getErrorText());
     }
