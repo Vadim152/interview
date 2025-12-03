@@ -3,12 +3,17 @@ package org.example.pages;
 import io.qameta.allure.Step;
 import org.example.core.BasePage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class ProductsPage extends BasePage {
 
     private static final By TITLE = By.cssSelector("span.title");
     private static final By CART_ICON = By.id("shopping_cart_container");
     private static final By PRODUCT_ITEMS = By.cssSelector(".inventory_item");
+    private static final By PRODUCT_NAME = By.className("inventory_item_name");
+    private static final By PRODUCT_PRICE = By.className("inventory_item_price");
 
     public boolean isOpened() {
         return getCurrentUrl().contains("inventory") && find(TITLE).isDisplayed();
@@ -16,6 +21,19 @@ public class ProductsPage extends BasePage {
 
     public int getProductsCount() {
         return driver.findElements(PRODUCT_ITEMS).size();
+    }
+
+    public List<Product> getProducts() {
+        List<WebElement> items = driver.findElements(PRODUCT_ITEMS);
+
+        return items.stream()
+                .map(item -> {
+                    String name = item.findElement(PRODUCT_NAME).getText();
+                    String priceText = item.findElement(PRODUCT_PRICE).getText().replace("$", "");
+                    double price = Double.parseDouble(priceText);
+                    return new Product(name, price);
+                })
+                .toList();
     }
 
     @Step("Добавляем товар '{productName}' в корзину")
@@ -30,5 +48,24 @@ public class ProductsPage extends BasePage {
     public CartPage openCart() {
         click(CART_ICON);
         return new CartPage();
+    }
+
+    public static class Product {
+
+        private final String name;
+        private final double price;
+
+        public Product(String name, double price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
     }
 }
