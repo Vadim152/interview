@@ -1,6 +1,6 @@
 package org.example.core;
 
-import io.qameta.allure.Allure;
+import io.qameta.allure.Attachment;
 import org.example.config.TestConfig;
 import org.example.driver.DriverFactory;
 import org.example.driver.DriverManager;
@@ -10,43 +10,43 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-
 public abstract class BaseTest {
 
-    private final TestConfig config = new TestConfig();
-
-    protected TestConfig getConfig() {
-        return config;
-    }
+    protected TestConfig config = new TestConfig();
 
     @BeforeEach
     public void setUp() {
         WebDriver driver = DriverFactory.createDriver(config);
-        driver.manage().timeouts().pageLoadTimeout(config.getPageLoadTimeout());
-        driver.manage().timeouts().implicitlyWait(config.getImplicitTimeout());
         DriverManager.setDriver(driver);
+        driver.manage().timeouts().implicitlyWait(config.getImplicitTimeout());
+        driver.manage().timeouts().pageLoadTimeout(config.getPageLoadTimeout());
+        driver.manage().window().maximize();
         driver.get(config.getBaseUrl());
     }
 
     @AfterEach
     public void tearDown() {
-        WebDriver driver = DriverManager.getDriver();
-        attachScreenshot(driver);
-        attachPageSource(driver);
-        DriverManager.quitDriver();
-    }
-
-    private void attachScreenshot(WebDriver driver) {
-        if (driver instanceof TakesScreenshot takesScreenshot) {
-            byte[] screenshot = takesScreenshot.getScreenshotAs(OutputType.BYTES);
-            Allure.addAttachment("Screenshot", "image/png", new ByteArrayInputStream(screenshot), "png");
+        WebDriver driver = getSafeDriver();
+        if (driver != null) {
+            takeScreenshot();
+            DriverManager.quitDriver();
         }
     }
 
-    private void attachPageSource(WebDriver driver) {
-        String source = driver.getPageSource();
-        Allure.addAttachment("Page source", "text/html", new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8)), "html");
+    private WebDriver getSafeDriver() {
+        try {
+            return DriverManager.getDriver();
+        } catch (IllegalStateException ignored) {
+            return null;
+        }
+    }
+
+    @Attachment(value = "Screenshot", type = "image/png")
+    public byte[] takeScreenshot() {
+        WebDriver driver = getSafeDriver();
+        if (driver instanceof TakesScreenshot takesScreenshot) {
+            return takesScreenshot.getScreenshotAs(OutputType.BYTES);
+        }
+        return new byte[0];
     }
 }
