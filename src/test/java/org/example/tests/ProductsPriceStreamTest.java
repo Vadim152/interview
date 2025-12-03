@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProductsPriceStreamTest extends BaseTest {
 
@@ -25,11 +26,11 @@ class ProductsPriceStreamTest extends BaseTest {
                 .filter(product -> product.getPrice() < 15.0)
                 .toList();
 
-        assertThat(cheapProducts)
-                .as("Должны быть товары дешевле 15$")
-                .isNotEmpty();
+        assertFalse(cheapProducts.isEmpty(), "Должны быть товары дешевле 15$");
 
-        assertThat(cheapProducts)
-                .allMatch(product -> product.getPrice() < 15.0);
+        assertTrue(
+                cheapProducts.stream().allMatch(product -> product.getPrice() < 15.0),
+                "Все найденные товары должны стоить меньше 15$"
+        );
     }
 }
