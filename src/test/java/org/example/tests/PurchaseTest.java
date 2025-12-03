@@ -10,7 +10,7 @@ import org.example.pages.ProductsPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("E2E")
 @Feature("Покупка товара")
@@ -25,9 +25,7 @@ public class PurchaseTest extends BaseTest {
         ProductsPage productsPage = loginPage.loginAs("standard_user", "secret_sauce");
 
         // 2. Проверяем, что попали на страницу товаров
-        assertThat(productsPage.isOpened())
-                .as("Страница товаров должна быть открыта")
-                .isTrue();
+        assertTrue(productsPage.isOpened(), "Страница товаров должна быть открыта");
 
         // 3. Добавляем товар в корзину
         String productName = "Sauce Labs Backpack";
@@ -37,8 +35,6 @@ public class PurchaseTest extends BaseTest {
         CartPage cartPage = productsPage.openCart();
 
         // 5. Проверяем, что товар есть в корзине
-        assertThat(cartPage.hasProduct(productName))
-                .as("Товар должен отображаться в корзине")
-                .isTrue();
+        assertTrue(cartPage.hasProduct(productName), "Товар должен отображаться в корзине");
     }
 }
