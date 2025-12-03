@@ -24,7 +24,7 @@ public class DriverFactory {
         switch (browser) {
             case "firefox" -> driver = createFirefox(headless);
             case "chrome" -> driver = createChrome(headless);
-            default -> throw new IllegalArgumentException("Unsupported browser: " + browser);
+            default -> throw new IllegalArgumentException("Неподдерживаемый браузер: " + browser);
         }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(TestConfig.getImplicitTimeout()));
