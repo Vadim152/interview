@@ -4,6 +4,7 @@ import org.example.driver.DriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -31,6 +32,14 @@ public abstract class BasePage {
         WebElement element = find(locator);
         element.clear();
         element.sendKeys(value);
+    }
+
+    protected boolean isVisible(By locator) {
+        try {
+            return find(locator).isDisplayed();
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
     public String getCurrentUrl() {
