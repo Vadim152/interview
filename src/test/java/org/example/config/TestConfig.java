@@ -25,7 +25,7 @@ public class TestConfig {
                 properties.load(input);
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to load default config", e);
+            throw new IllegalStateException("Не удалось загрузить конфигурацию по умолчанию", e);
         }
     }
 
@@ -41,7 +41,7 @@ public class TestConfig {
                 properties.load(input);
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to load config for env: " + env, e);
+            throw new IllegalStateException("Не удалось загрузить конфигурацию для окружения: " + env, e);
         }
     }
 

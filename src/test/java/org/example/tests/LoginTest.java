@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("Authentication")
-@Feature("Login")
+@Epic("Аутентификация")
+@Feature("Вход")
 class LoginTest extends BaseTest {
 
     @Test
-    @Story("Successful login with valid credentials")
-    @DisplayName("User can login with standard_user")
+    @Story("Успешный вход с корректными учетными данными")
+    @DisplayName("Пользователь может войти как standard_user")
     void userCanLogin() {
         LoginPage loginPage = new LoginPage();
         ProductsPage productsPage = loginPage.loginAs("standard_user", "secret_sauce");
@@ -26,10 +26,10 @@ class LoginTest extends BaseTest {
     }
 
     @Test
-    @Story("Error message for invalid password")
+    @Story("Сообщение об ошибке при неверном пароле")
     void userSeesErrorOnInvalidPassword() {
         LoginPage loginPage = new LoginPage();
         loginPage.loginAs("standard_user", "wrong");
-        assertEquals("Epic sadface: Username and password do not match any user in this service", loginPage.getErrorText());
+        assertEquals("Epic sadface: Имя пользователя и пароль не совпадают ни с одним пользователем этого сервиса", loginPage.getErrorText());
     }
 }

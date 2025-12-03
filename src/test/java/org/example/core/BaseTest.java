@@ -32,7 +32,7 @@ public abstract class BaseTest {
         WebDriver driver = DriverManager.getDriver();
         if (driver instanceof TakesScreenshot screenshot) {
             byte[] bytes = screenshot.getScreenshotAs(OutputType.BYTES);
-            Allure.getLifecycle().addAttachment("Screenshot", "image/png", "png", bytes);
+            Allure.getLifecycle().addAttachment("Скриншот", "image/png", "png", bytes);
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class BaseTest {
         WebDriver driver = DriverManager.getDriver();
         if (driver != null) {
             String source = driver.getPageSource();
-            Allure.getLifecycle().addAttachment("Page source", "text/html", "html", source.getBytes(StandardCharsets.UTF_8));
+            Allure.getLifecycle().addAttachment("Исходный код страницы", "text/html", "html", source.getBytes(StandardCharsets.UTF_8));
         }
     }
 }

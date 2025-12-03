@@ -6,28 +6,28 @@ import org.junit.jupiter.api.Test;
 
 public class StepTest {
 
-    private static final String GLOBAL_PARAMETER = "global value";
+    private static final String GLOBAL_PARAMETER = "глобальное значение";
 
     @Test
     public void annotatedStepTest() {
-        annotatedStep("local value");
+        annotatedStep("локальное значение");
     }
 
     @Test
     public void lambdaStepTest() {
-        final String localParameter = "parameter value";
-        Allure.step(String.format("Parent lambda step with parameter [%s]", localParameter), (step) -> {
-            step.parameter("parameter", localParameter);
-            Allure.step(String.format("Nested lambda step with global parameter [%s]", GLOBAL_PARAMETER));
+        final String localParameter = "значение параметра";
+        Allure.step(String.format("Родительский lambda-шаг с параметром [%s]", localParameter), (step) -> {
+            step.parameter("параметр", localParameter);
+            Allure.step(String.format("Вложенный lambda-шаг с глобальным параметром [%s]", GLOBAL_PARAMETER));
         });
     }
 
-    @Step("Parent annotated step with parameter [{parameter}]")
+    @Step("Родительский аннотированный шаг с параметром [{parameter}]")
     public void annotatedStep(final String parameter) {
         nestedAnnotatedStep();
     }
 
-    @Step("Nested annotated step with global parameter [{this.GLOBAL_PARAMETER}]")
+    @Step("Вложенный аннотированный шаг с глобальным параметром [{this.GLOBAL_PARAMETER}]")
     public void nestedAnnotatedStep() {
 
     }
