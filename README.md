@@ -2,11 +2,36 @@
 
 Лёгкий фреймворк на JUnit 5 + Selenium для демонстрации подхода к UI-тестам и Allure-отчётам.
 
-## Основные возможности
-- Управление конфигурацией через `-D` флаги и property-файлы (`baseUrl`, `browser`, `timeout.seconds`).
-- Управление жизненным циклом WebDriver в `BaseTest` с автоматическими скриншотами и `page source` в Allure после каждого теста.
-- Page Object слой с базовыми методами ожиданий.
-- Пример рабочего теста авторизации на [saucedemo.com](https://www.saucedemo.com/).
+## Требования
+- JDK 17
+- Maven
+- Google Chrome (для локального запуска UI-тестов)
+
+## Как запустить тесты
+```bash
+# Используя дефолты: chrome, headless, https://www.saucedemo.com/
+./mvnw test
+
+# Выбор окружения и браузера
+./mvnw test -Denv=qa -Dbrowser=firefox
+
+# Запуск с явным указанием окружения и headless-режима
+mvn clean test \
+  -Denv=qa \
+  -Dbrowser=chrome \
+  -Dheadless=true
+
+# Отключить headless-режим
+./mvnw test -Dheadless=false
+
+# Сформировать и открыть отчёт Allure
+mvn allure:serve
+
+# Генерация отчёта после тестов через профиль
+mvn clean test -Pallure
+```
+
+По завершении тестов артефакты Allure лежат в `target/allure-results`, а профиль `allure` соберёт html-отчёт в `target/site/allure-maven-plugin`.
 
 ## Структура
 ```
@@ -33,31 +58,15 @@ src
       └─ config.stage.properties
 ```
 
-## Запуск
-```bash
-# Используя дефолты: chrome, headless, https://www.saucedemo.com/
-./mvnw test
+## Что должен сделать кандидат
+- Найти тесты в `src/test/java/org/example/tests`.
+- Найти Page Object-классы в `src/test/java/org/example/pages`.
+- Ознакомиться с примером реализованного теста `LoginTest`.
 
-# Выбор окружения и браузера
-./mvnw test -Denv=qa -Dbrowser=firefox
-
-# Запуск с явным указанием окружения и headless-режима
-mvn clean test \
-  -Denv=qa \
-  -Dbrowser=chrome \
-  -Dheadless=true
-
-# Отключить headless-режим
-./mvnw test -Dheadless=false
-
-# Сформировать и открыть отчёт Allure
-mvn allure:serve
-
-# Генерация отчёта после тестов через профиль
-mvn clean test -Pallure
-```
-
-По завершении тестов артефакты Allure лежат в `target/allure-results`, а профиль `allure` соберёт html-отчёт в `target/site/allure-maven-plugin`.
+## Задания на собеседовании
+- Добавить тест на добавление товара в корзину.
+- Реализовать Page Object для корзины.
+- Покрыть негативный сценарий логина.
 
 ## Заготовка под задание
 - Добавьте новые Page Object-классы и тесты по аналогии с `LoginPage`/`ProductsPage`.
