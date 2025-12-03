@@ -47,7 +47,9 @@ public class DriverFactory {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
         options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
-        options.setHeadless(headless);
+        if (headless) {
+            options.addArguments("-headless");
+        }
         options.addArguments("--width=1920", "--height=1080");
         return new FirefoxDriver(options);
     }
