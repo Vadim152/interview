@@ -2,6 +2,7 @@ package org.example.pages;
 
 import io.qameta.allure.Step;
 import org.example.core.BasePage;
+import org.example.dto.Product;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -50,22 +51,4 @@ public class ProductsPage extends BasePage {
         return new CartPage();
     }
 
-    public static class Product {
-
-        private final String name;
-        private final double price;
-
-        public Product(String name, double price) {
-            this.name = name;
-            this.price = price;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-    }
 }

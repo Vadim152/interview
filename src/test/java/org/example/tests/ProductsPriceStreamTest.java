@@ -1,6 +1,7 @@
 package org.example.tests;
 
 import org.example.core.BaseTest;
+import org.example.dto.Product;
 import org.example.pages.LoginPage;
 import org.example.pages.ProductsPage;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +19,9 @@ class ProductsPriceStreamTest extends BaseTest {
         LoginPage loginPage = new LoginPage();
         ProductsPage productsPage = loginPage.loginAs("standard_user", "secret_sauce");
 
-        List<ProductsPage.Product> products = productsPage.getProducts();
+        List<Product> products = productsPage.getProducts();
 
-        List<ProductsPage.Product> cheapProducts = products.stream()
+        List<Product> cheapProducts = products.stream()
                 .filter(product -> product.getPrice() < 15.0)
                 .toList();
 
