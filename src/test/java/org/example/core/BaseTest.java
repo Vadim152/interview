@@ -15,13 +15,19 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class BaseTest {
 
+    private final TestConfig config = new TestConfig();
+
+    protected TestConfig getConfig() {
+        return config;
+    }
+
     @BeforeEach
     public void setUp() {
-        WebDriver driver = DriverFactory.createDriver();
-        driver.manage().timeouts().pageLoadTimeout(TestConfig.getTimeout());
-        driver.manage().timeouts().implicitlyWait(TestConfig.getTimeout());
+        WebDriver driver = DriverFactory.createDriver(config);
+        driver.manage().timeouts().pageLoadTimeout(config.getPageLoadTimeout());
+        driver.manage().timeouts().implicitlyWait(config.getImplicitTimeout());
         DriverManager.setDriver(driver);
-        driver.get(TestConfig.getBaseUrl());
+        driver.get(config.getBaseUrl());
     }
 
     @AfterEach
@@ -29,8 +35,7 @@ public abstract class BaseTest {
         WebDriver driver = DriverManager.getDriver();
         attachScreenshot(driver);
         attachPageSource(driver);
-        driver.quit();
-        DriverManager.unload();
+        DriverManager.quitDriver();
     }
 
     private void attachScreenshot(WebDriver driver) {

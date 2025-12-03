@@ -1,25 +1,24 @@
 package org.example.driver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.example.config.TestConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.example.config.TestConfig;
 
 public final class DriverFactory {
 
     private DriverFactory() {
     }
 
-    public static WebDriver createDriver() {
-        String browser = TestConfig.getBrowser().toLowerCase();
-        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+    public static WebDriver createDriver(TestConfig config) {
+        String browser = config.getBrowser().toLowerCase();
 
         return switch (browser) {
-            case "firefox" -> createFirefox(headless);
-            case "chrome" -> createChrome(headless);
+            case "firefox" -> createFirefox(config.isHeadless());
+            case "chrome" -> createChrome(config.isHeadless());
             default -> throw new IllegalArgumentException("Unsupported browser: " + browser);
         };
     }
