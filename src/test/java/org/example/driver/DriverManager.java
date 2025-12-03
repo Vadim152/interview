@@ -21,7 +21,11 @@ public final class DriverManager {
         DRIVER.set(driver);
     }
 
-    public static void unload() {
-        DRIVER.remove();
+    public static void quitDriver() {
+        WebDriver driver = DRIVER.get();
+        if (driver != null) {
+            driver.quit();
+            DRIVER.remove();
+        }
     }
 }

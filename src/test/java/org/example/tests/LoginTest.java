@@ -22,10 +22,10 @@ class LoginTest extends BaseTest {
     @DisplayName("User can log in with standard credentials")
     @Severity(SeverityLevel.CRITICAL)
     void userCanLogin() {
-        LoginPage loginPage = new LoginPage();
+        LoginPage loginPage = new LoginPage(getConfig());
         loginPage.loginAs("standard_user", "secret_sauce");
 
-        ProductsPage productsPage = new ProductsPage();
+        ProductsPage productsPage = new ProductsPage(getConfig());
         assertEquals("Products", productsPage.getTitle(), "Products page should be displayed after login");
     }
 }
