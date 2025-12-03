@@ -1,27 +1,50 @@
 package org.example.pages;
 
+import io.qameta.allure.Step;
+import org.example.config.TestConfig;
 import org.example.core.BasePage;
 import org.openqa.selenium.By;
 
 public class LoginPage extends BasePage {
 
-    private static final By USERNAME = By.id("user-name");
-    private static final By PASSWORD = By.id("password");
+    private static final By USERNAME_INPUT = By.id("user-name");
+    private static final By PASSWORD_INPUT = By.id("password");
     private static final By LOGIN_BUTTON = By.id("login-button");
-    private static final By ERROR = By.cssSelector("[data-test='error']");
+    private static final By ERROR_MESSAGE = By.cssSelector("h3[data-test='error']");
 
-    public LoginPage() {
-        super();
-    }
-
-    public LoginPage loginAs(String username, String password) {
-        type(USERNAME, username);
-        type(PASSWORD, password);
-        click(LOGIN_BUTTON);
+    @Step("Open login page")
+    public LoginPage open() {
+        driver.get(TestConfig.getBaseUrl());
         return this;
     }
 
-    public boolean isErrorVisible() {
-        return !getDriver().findElements(ERROR).isEmpty();
+    @Step("Set username {user}")
+    public LoginPage setUsername(String user) {
+        type(USERNAME_INPUT, user);
+        return this;
+    }
+
+    @Step("Set password")
+    public LoginPage setPassword(String pass) {
+        type(PASSWORD_INPUT, pass);
+        return this;
+    }
+
+    @Step("Submit login form")
+    public ProductsPage submitLogin() {
+        click(LOGIN_BUTTON);
+        return new ProductsPage();
+    }
+
+    @Step("Get error message")
+    public String getErrorText() {
+        return find(ERROR_MESSAGE).getText();
+    }
+
+    @Step("Login as user {username}")
+    public ProductsPage loginAs(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+        return submitLogin();
     }
 }

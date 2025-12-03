@@ -1,6 +1,6 @@
 package org.example.core;
 
-import io.qameta.allure.Attachment;
+import io.qameta.allure.Allure;
 import org.example.config.TestConfig;
 import org.example.driver.DriverFactory;
 import org.example.driver.DriverManager;
@@ -10,43 +10,37 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
-public abstract class BaseTest {
+import java.nio.charset.StandardCharsets;
 
-    protected TestConfig config = new TestConfig();
+public abstract class BaseTest {
 
     @BeforeEach
     public void setUp() {
-        WebDriver driver = DriverFactory.createDriver(config);
+        WebDriver driver = DriverFactory.createDriver();
         DriverManager.setDriver(driver);
-        driver.manage().timeouts().implicitlyWait(config.getImplicitTimeout());
-        driver.manage().timeouts().pageLoadTimeout(config.getPageLoadTimeout());
-        driver.manage().window().maximize();
-        driver.get(config.getBaseUrl());
+        driver.get(TestConfig.getBaseUrl());
     }
 
     @AfterEach
     public void tearDown() {
-        WebDriver driver = getSafeDriver();
+        attachPageSource();
+        attachScreenshot();
+        DriverManager.unload();
+    }
+
+    private void attachScreenshot() {
+        WebDriver driver = DriverManager.getDriver();
+        if (driver instanceof TakesScreenshot screenshot) {
+            byte[] bytes = screenshot.getScreenshotAs(OutputType.BYTES);
+            Allure.getLifecycle().addAttachment("Screenshot", "image/png", "png", bytes);
+        }
+    }
+
+    private void attachPageSource() {
+        WebDriver driver = DriverManager.getDriver();
         if (driver != null) {
-            takeScreenshot();
-            DriverManager.quitDriver();
+            String source = driver.getPageSource();
+            Allure.getLifecycle().addAttachment("Page source", "text/html", "html", source.getBytes(StandardCharsets.UTF_8));
         }
-    }
-
-    private WebDriver getSafeDriver() {
-        try {
-            return DriverManager.getDriver();
-        } catch (IllegalStateException ignored) {
-            return null;
-        }
-    }
-
-    @Attachment(value = "Screenshot", type = "image/png")
-    public byte[] takeScreenshot() {
-        WebDriver driver = getSafeDriver();
-        if (driver instanceof TakesScreenshot takesScreenshot) {
-            return takesScreenshot.getScreenshotAs(OutputType.BYTES);
-        }
-        return new byte[0];
     }
 }

@@ -41,11 +41,23 @@ src
 # Выбор окружения и браузера
 ./mvnw test -Denv=qa -Dbrowser=firefox
 
+# Запуск с явным указанием окружения и headless-режима
+mvn clean test \
+  -Denv=qa \
+  -Dbrowser=chrome \
+  -Dheadless=true
+
 # Отключить headless-режим
 ./mvnw test -Dheadless=false
+
+# Сформировать и открыть отчёт Allure
+mvn allure:serve
+
+# Генерация отчёта после тестов через профиль
+mvn clean test -Pallure
 ```
 
-По завершении тестов артефакты Allure лежат в `target/allure-results`.
+По завершении тестов артефакты Allure лежат в `target/allure-results`, а профиль `allure` соберёт html-отчёт в `target/site/allure-maven-plugin`.
 
 ## Заготовка под задание
 - Добавьте новые Page Object-классы и тесты по аналогии с `LoginPage`/`ProductsPage`.
