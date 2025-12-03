@@ -21,7 +21,7 @@ public class PurchaseTest extends BaseTest {
     @DisplayName("Пользователь может залогиниться и добавить товар в корзину")
     void userCanLoginAndAddProductToCart() {
         // 1. Логин
-        LoginPage loginPage = new LoginPage();
+        LoginPage loginPage = LoginPage.getInstance();
         ProductsPage productsPage = loginPage.loginAs("standard_user", "secret_sauce");
 
         // 2. Проверяем, что попали на страницу товаров
