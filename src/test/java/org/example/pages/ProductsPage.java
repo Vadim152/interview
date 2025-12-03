@@ -5,13 +5,14 @@ import org.openqa.selenium.By;
 
 public class ProductsPage extends BasePage {
 
-    private static final By TITLE = By.cssSelector(".title");
+    private static final By TITLE = By.cssSelector("span.title");
+    private static final By PRODUCT_ITEMS = By.cssSelector(".inventory_item");
 
-    public ProductsPage() {
-        super();
+    public boolean isOpened() {
+        return getCurrentUrl().contains("inventory") && find(TITLE).isDisplayed();
     }
 
-    public String getTitle() {
-        return getText(TITLE);
+    public int getProductsCount() {
+        return driver.findElements(PRODUCT_ITEMS).size();
     }
 }

@@ -2,58 +2,70 @@ package org.example.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
-import java.util.Objects;
 import java.util.Properties;
 
 public class TestConfig {
+    private static final String DEFAULT_CONFIG = "/config.properties";
+    private static final String ENV_CONFIG_PATTERN = "/config.%s.properties";
 
-    private final Properties properties;
+    private static final Properties properties = new Properties();
 
-    public TestConfig() {
-        this.properties = loadProperties();
+    static {
+        loadDefaults();
+        loadEnvironmentSpecific();
+        overrideWithSystemProperties();
     }
 
-    public String getBaseUrl() {
-        return Objects.requireNonNull(properties.getProperty("baseUrl"), "baseUrl is not set");
+    private TestConfig() {
     }
 
-    public String getBrowser() {
+    private static void loadDefaults() {
+        try (InputStream input = TestConfig.class.getResourceAsStream(DEFAULT_CONFIG)) {
+            if (input != null) {
+                properties.load(input);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load default config", e);
+        }
+    }
+
+    private static void loadEnvironmentSpecific() {
+        String env = System.getProperty("env");
+        if (env == null || env.isBlank()) {
+            return;
+        }
+
+        String resourcePath = ENV_CONFIG_PATTERN.formatted(env);
+        try (InputStream input = TestConfig.class.getResourceAsStream(resourcePath)) {
+            if (input != null) {
+                properties.load(input);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load config for env: " + env, e);
+        }
+    }
+
+    private static void overrideWithSystemProperties() {
+        System.getProperties().forEach((key, value) -> properties.put(key, value));
+    }
+
+    public static String getBaseUrl() {
+        return properties.getProperty("baseUrl", "https://www.saucedemo.com");
+    }
+
+    public static String getBrowser() {
         return properties.getProperty("browser", "chrome");
     }
 
-    public boolean isHeadless() {
-        return Boolean.parseBoolean(properties.getProperty("headless", "false"));
+    public static boolean isHeadless() {
+        return Boolean.parseBoolean(properties.getProperty("headless", "true"));
     }
 
-    public Duration getImplicitTimeout() {
-        String implicitTimeoutSeconds = properties.getProperty("implicitTimeout", "5");
-        return Duration.ofSeconds(Long.parseLong(implicitTimeoutSeconds));
+    public static long getImplicitTimeout() {
+        return Long.parseLong(properties.getProperty("implicitTimeout", "5"));
     }
 
-    public Duration getPageLoadTimeout() {
-        String pageLoadTimeoutSeconds = properties.getProperty("pageLoadTimeout", "30");
-        return Duration.ofSeconds(Long.parseLong(pageLoadTimeoutSeconds));
-    }
-
-    private Properties loadProperties() {
-        Properties properties = new Properties();
-        String env = System.getProperty("env", "").trim();
-        String fileName = env.isEmpty() ? "config.properties" : String.format("config.%s.properties", env);
-
-        try (InputStream stream = TestConfig.class.getClassLoader().getResourceAsStream(fileName)) {
-            if (stream != null) {
-                properties.load(stream);
-            } else {
-                throw new IllegalStateException("Cannot find properties file: " + fileName);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to load properties: " + fileName, e);
-        }
-
-        System.getProperties()
-                .forEach((key, value) -> properties.setProperty(String.valueOf(key), String.valueOf(value)));
-
-        return properties;
+    public static long getPageLoadTimeout() {
+        return Long.parseLong(properties.getProperty("pageLoadTimeout", "30"));
     }
 }
