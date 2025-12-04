@@ -4,6 +4,7 @@ import org.example.driver.DriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,11 +15,11 @@ public abstract class BasePage {
     private static final Duration WAIT_TIMEOUT = Duration.ofSeconds(10);
 
     protected WebElement find(By locator) {
-        return wait().until(ExpectedConditions.visibilityOfElementLocated(locator));
+        return getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     protected void click(By locator) {
-        wait().until(ExpectedConditions.elementToBeClickable(locator)).click();
+        getWait().until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
     protected void type(By locator, String value) {
@@ -36,10 +37,14 @@ public abstract class BasePage {
     }
 
     public String getCurrentUrl() {
-        return DriverManager.getDriver().getCurrentUrl();
+        return getDriver().getCurrentUrl();
     }
 
-    private WebDriverWait wait() {
-        return new WebDriverWait(DriverManager.getDriver(), WAIT_TIMEOUT);
+    private WebDriverWait getWait() {
+        return new WebDriverWait(getDriver(), WAIT_TIMEOUT);
+    }
+
+    protected WebDriver getDriver() {
+        return DriverManager.getDriver();
     }
 }

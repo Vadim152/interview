@@ -29,11 +29,11 @@ public class ProductsPage extends BasePage {
     }
 
     public int getProductsCount() {
-        return driver.findElements(PRODUCT_ITEMS).size();
+        return getDriver().findElements(PRODUCT_ITEMS).size();
     }
 
     public List<Product> getProducts() {
-        List<WebElement> items = driver.findElements(PRODUCT_ITEMS);
+        List<WebElement> items = getDriver().findElements(PRODUCT_ITEMS);
 
         return items.stream()
                 .map(item -> {
